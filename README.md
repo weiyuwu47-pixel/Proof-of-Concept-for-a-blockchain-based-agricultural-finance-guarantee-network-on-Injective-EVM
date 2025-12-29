@@ -13,8 +13,7 @@ agricultural financing guarantee systems in China.
 
 The original version of this project is written in **Chinese**.
 
-The English version is translated with the assistance of ChatGPT and
-reviewed by the author.
+The English version is translated with the assistance of ChatGPT.
 
 If you can read Chinese, **please refer to the Chinese version first**.
 In case of any discrepancy between the two versions, **the Chinese version
@@ -43,13 +42,14 @@ YouTube: https://youtube.com/xxxxx
 ---
 
 ## 👤 About the Author
+Open to DevRel opportunities.
 
 Bachelor’s degree in Computer Science.
 
 From 2023 to 2024, worked as a product manager on the digitalization of
-provincial agricultural financing guarantee systems in Anhui and Liaoning.
+provincial agricultural financing guarantee systems.
 focusing on system design and cross-institution coordination
 
 Currently a Chinese-language finance content creator.
 
-Open to DevRel opportunities.
+

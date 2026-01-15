@@ -32,13 +32,13 @@ should be considered authoritative**.
 
 ## 🎥 Video & Content
 
-2-minute explainer video (English)
+3-minute explainer video (English)
 
-YouTube: https://youtube.com/xxxxx
+https://x.com/YvonneXiaoyu/status/2011843920490353121
 
 - **X Thread summary**
-  https://x.com/xxxxx
 
+https://x.com/YvonneXiaoyu/status/2011843907878076542?s=20
 ---
 
 ## 👤 About the Author

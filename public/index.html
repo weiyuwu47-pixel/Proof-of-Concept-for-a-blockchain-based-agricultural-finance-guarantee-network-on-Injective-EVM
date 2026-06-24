@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Injective 农业融资担保 Demo</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">Injective EVM Proof of Concept</p>
+          <h1>农业融资担保链上协同台</h1>
+        </div>
+        <div class="network-pill">
+          <span class="dot"></span>
+          Injective EVM Ready
+        </div>
+      </section>
+
+      <section class="hero-band" aria-label="融资担保网络概览">
+        <img src="./assets/agri-network-banner.png" alt="农业融资担保网络示意图" />
+        <div class="hero-overlay">
+          <div class="loan-id">Loan #20260624</div>
+          <div class="hero-metrics">
+            <span>申请金额 <strong id="metricPrincipal">8.00 INJ</strong></span>
+            <span>担保覆盖 <strong id="metricCoverage">80%</strong></span>
+            <span>状态 <strong id="metricStatus">待申请</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="sidebar" aria-label="角色与资料">
+          <div class="panel">
+            <h2>当前角色</h2>
+            <div class="role-grid" id="roleGrid"></div>
+          </div>
+
+          <div class="panel farm-file">
+            <h2>授信资料</h2>
+            <dl>
+              <div><dt>作物</dt><dd>温室番茄</dd></div>
+              <div><dt>订单</dt><dd>60 吨采购合同</dd></div>
+              <div><dt>地块</dt><dd>清河县示范基地</dd></div>
+              <div><dt>物联网</dt><dd>湿度、温控、采收记录</dd></div>
+            </dl>
+          </div>
+        </aside>
+
+        <section class="main-panel" aria-label="流程操作台">
+          <div class="panel action-panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Workflow</p>
+                <h2>融资担保状态机</h2>
+              </div>
+              <button class="ghost-button" id="resetButton" type="button" title="重置流程">重置</button>
+            </div>
+            <div class="stepper" id="stepper"></div>
+            <div class="action-row" id="actionRow"></div>
+          </div>
+
+          <div class="two-column">
+            <div class="panel">
+              <h2>资金与风险</h2>
+              <div class="risk-grid">
+                <div>
+                  <span class="label">贷款本金</span>
+                  <strong id="principalValue">8.00 INJ</strong>
+                </div>
+                <div>
+                  <span class="label">年化利率</span>
+                  <strong id="rateValue">8.50%</strong>
+                </div>
+                <div>
+                  <span class="label">担保费率</span>
+                  <strong id="feeValue">1.80%</strong>
+                </div>
+                <div>
+                  <span class="label">预计赔付敞口</span>
+                  <strong id="exposureValue">6.40 INJ</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h2>链上摘要</h2>
+              <div class="chain-box">
+                <span>Contract</span>
+                <code id="contractAddress">部署后填入合约地址</code>
+              </div>
+              <div class="chain-box">
+                <span>Metadata</span>
+                <code>ipfs://demo/greenhouse-tomato-credit-file</code>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="activity" aria-label="审计日志">
+          <div class="panel activity-panel">
+            <div class="panel-title compact">
+              <h2>审计日志</h2>
+              <span id="eventCount">0</span>
+            </div>
+            <ol class="timeline" id="timeline"></ol>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

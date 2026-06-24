@@ -1,0 +1,22 @@
+{
+  "name": "injective-agri-guarantee-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Demo for a blockchain-based agricultural finance guarantee workflow on Injective EVM.",
+  "scripts": {
+    "dev": "vite public --host 127.0.0.1",
+    "static": "npx http-server public -p 5173",
+    "compile": "hardhat compile",
+    "compile:solcjs": "node scripts/compile-solcjs.js",
+    "test": "hardhat test",
+    "deploy:injective-testnet": "hardhat run scripts/deploy.js --network injectiveTestnet",
+    "deploy:injective-mainnet": "hardhat run scripts/deploy.js --network injectiveMainnet"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.22.19",
+    "vite": "^6.0.7"
+  },
+  "devDependencies": {}
+}

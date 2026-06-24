@@ -1,31 +1,81 @@
-# Injective 农业融资担保 Demo
+# Injective-based Agricultural Guarantee Network
 
-这是一个基于 Injective EVM 的农业融资担保 PoC demo。项目把“农户申请融资、合作社/核心企业订单背书、担保机构授信、银行放款、农户还款或担保代偿、链上审计留痕”做成了可运行的前端流程和可部署的 Solidity 合约。
+This project explores how Injective EVM can be used to redesign real-world agricultural loan guarantee systems through on-chain governance, transparent rules, and off-chain execution.
 
-## 项目结构
+The design is inspired by real product experience in provincial-level agricultural financing guarantee systems in China. The current repository now includes both the original concept documentation and a runnable Injective EVM proof-of-concept demo.
+
+## Author's Note on Language
+
+The original version of this project is written in Chinese.
+
+The English version is translated with the assistance of ChatGPT.
+
+If you can read Chinese, please refer to the Chinese version first. In case of any discrepancy between the two versions, the Chinese version should be considered authoritative.
+
+## Documentation
+
+- Chinese original: `agri-guarantee-on-injective-zh.md`
+- English translation: `agri-guarantee-on-injective-en.md`
+- Builder profile: `About the Builder.md`
+
+## Video & Content
+
+3-minute explainer video:
+
+https://x.com/YvonneXiaoyu/status/2011843920490353121
+
+X thread summary:
+
+https://x.com/YvonneXiaoyu/status/2011843907878076542?s=20
+
+## Demo Overview
+
+This repository includes a runnable demo for the agricultural finance guarantee workflow on Injective EVM. The demo turns the process of farmer application, buyer endorsement, guarantee approval, bank funding, repayment, overdue claim, and guarantee compensation into a Solidity state machine and an interactive dashboard.
+
+## Demo Project Structure
 
 ```text
-contracts/AgriculturalGuaranteeNetwork.sol  链上状态机合约
-scripts/deploy.js                           Hardhat 部署脚本
-scripts/seed-demo.js                        部署后灌入一条示例融资流程
-scripts/make-banner.js                      生成前端横幅 PNG 资产
-public/index.html                           静态前端入口
-public/src/app.js                           前端流程模拟逻辑
-public/src/styles.css                       仪表盘样式
+contracts/AgriculturalGuaranteeNetwork.sol  On-chain workflow state machine
+scripts/deploy.js                           Hardhat deployment script
+scripts/seed-demo.js                        Seed one demo financing workflow
+scripts/compile-solcjs.js                   solc-js fallback compiler
+scripts/make-banner.js                      Generate local dashboard banner PNG
+public/index.html                           Static frontend entry
+public/src/app.js                           Frontend workflow simulation logic
+public/src/styles.css                       Dashboard styles
 ```
 
-## 业务流程
+## Business Flow Implemented
 
-1. 农户提交融资申请，写入作物、地块、采购订单、授信资料索引和申请金额。
-2. 合作社或核心企业确认订单真实性，提供第一还款来源背书。
-3. 担保机构根据资料审批担保，设置担保覆盖比例和费率。
-4. 银行看到担保审批后放款，合约事件记录放款金额和到期日。
-5. 农户到期还款，资金流转给银行，贷款状态变为 `Repaid`。
-6. 若逾期，银行触发赔付申请，担保机构按覆盖比例代偿，状态变为 `Compensated`。
+1. Farmer submits a financing application with crop, location, order, credit-file metadata, and requested principal.
+2. Cooperative or core buyer confirms the purchase order and endorses the first repayment source.
+3. Guarantee institution approves coverage ratio and guarantee fee.
+4. Bank funds the loan after guarantee approval.
+5. Farmer repays principal and interest on maturity.
+6. If overdue, the bank requests a claim and the guarantor compensates according to the coverage ratio.
+7. Every key step emits contract events and is reflected in the audit timeline.
 
-## 本地运行前端
+## Run the Frontend Demo
 
-前端不依赖 npm 包，可以直接用 Python 静态服务器运行：
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the Vite demo:
+
+```bash
+npm run dev
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5173
+```
+
+If you want to run the static frontend without Vite:
 
 ```bash
 node scripts/make-banner.js
@@ -33,114 +83,124 @@ cd public
 python3 -m http.server 5173
 ```
 
-然后打开：
+## Deploy to Injective EVM
 
-```text
-http://127.0.0.1:5173
-```
-
-## 部署到 Injective EVM
-
-先安装依赖：
-
-```bash
-npm install
-```
-
-复制环境变量：
+Copy the environment file:
 
 ```bash
 cp .env.example .env
 ```
 
-填入部署钱包私钥。`.env.example` 中的 RPC 与 chainId 按 Injective 官方 EVM 网络信息页配置：mainnet chainId `1776`，testnet chainId `1439`。
+Fill in your deployer private key. The demo uses Injective EVM network parameters from the official Injective EVM network information page:
 
-编译合约：
+```text
+Mainnet chainId: 1776
+Testnet chainId: 1439
+```
+
+Compile with Hardhat:
 
 ```bash
 npm run compile
 ```
 
-如果 Hardhat 在当前网络下无法下载 Solidity 编译器，可以使用已安装的 solc-js 编译脚本：
+If Hardhat cannot download the Solidity compiler in the current network environment, use the solc-js fallback:
 
 ```bash
 npm run compile:solcjs
 ```
 
-部署到测试网：
+Deploy to Injective EVM testnet:
 
 ```bash
 npm run deploy:injective-testnet
 ```
 
-部署成功后，把控制台输出的合约地址填到前端 `public/src/app.js` 或直接替换页面里的 `Contract` 显示值。需要灌入链上示例数据时：
+Seed one demo flow after deployment:
 
 ```bash
 CONTRACT_ADDRESS=0xYourContractAddress npx hardhat run scripts/seed-demo.js --network injectiveTestnet
 ```
 
-## 合约核心
-
-`AgriculturalGuaranteeNetwork` 使用原生 INJ 作为资金单位，关键函数如下：
+## Smart Contract Entry Points
 
 ```text
-applyForLoan       农户提交融资申请
-buyerEndorse       订单方/核心企业背书
-approveGuarantee   担保机构审批担保
-fundLoan           银行支付本金并放款给农户
-repayLoan          农户还款给银行
-requestClaim       银行在逾期后触发赔付
-compensateClaim    担保机构向银行代偿
+applyForLoan       Farmer submits a financing application
+buyerEndorse       Buyer/cooperative confirms the order
+approveGuarantee   Guarantor approves coverage and fee
+fundLoan           Bank releases principal to farmer
+repayLoan          Farmer repays the bank
+requestClaim       Bank requests compensation after overdue
+compensateClaim    Guarantor compensates the bank
 ```
 
-合约会为每个节点发出事件，前端或索引服务可以订阅事件形成审计日志。
-
-## 当前版本完成记录
+## Current Version Completion Record
 
 ### v0.1.0 / 2026-06-24
 
-本版本已完成一个可演示、可编译、可部署的 Injective EVM 农业融资担保 PoC：
+This version completes a runnable, compilable, and deployable Injective EVM agricultural finance guarantee PoC.
+
+Completed workflow:
 
 ```text
-业务流程
-- 农户融资申请
-- 合作社/核心企业订单背书
-- 担保机构审批授信
-- 银行放款
-- 正常还款
-- 逾期赔付与担保代偿
-- 链上审计日志
-
-链上合约
-- 实现 AgriculturalGuaranteeNetwork 主合约
-- 每笔贷款使用独立 Loan 记录
-- 使用 LoanStatus 状态机约束流程顺序
-- 通过事件记录申请、背书、审批、放款、还款、赔付、拒绝等节点
-- 使用原生 INJ 作为 demo 资金单位
-- 提供 payoffAmount 与 guaranteeExposure 风险测算函数
-
-前端 demo
-- 完成静态单页操作台
-- 支持农户、核心企业、担保机构、银行四类角色切换
-- 支持一键推进完整融资担保流程
-- 支持逾期赔付分支
-- 展示资金参数、担保敞口、链上摘要和审计日志
-- 内置农业金融网络横幅图片资产
-
-工程配置
-- 添加 Hardhat 部署配置
-- 配置 Injective EVM mainnet/testnet RPC 与 chainId
-- 添加部署脚本 scripts/deploy.js
-- 添加示例数据脚本 scripts/seed-demo.js
-- 添加 solc-js 编译脚本 scripts/compile-solcjs.js，避免网络下载 Solidity 编译器失败时无法验证
-- 添加 .env.example 与 .gitignore
+- Farmer financing application
+- Cooperative/core buyer order endorsement
+- Guarantee institution credit approval
+- Bank funding
+- Normal repayment
+- Overdue claim and guarantee compensation
+- On-chain audit events
 ```
 
-已本地验证：
+Completed smart contract work:
+
+```text
+- Implemented AgriculturalGuaranteeNetwork main contract
+- Added one Loan record per financing application
+- Added LoanStatus state machine
+- Added events for application, endorsement, approval, funding, repayment, claim, compensation, rejection, and cancellation
+- Used native INJ as the demo funding unit
+- Added payoffAmount and guaranteeExposure calculation helpers
+```
+
+Completed frontend work:
+
+```text
+- Added static single-page dashboard
+- Added four role switches: farmer, buyer, guarantor, bank
+- Added one-click workflow progression
+- Added overdue compensation branch
+- Added risk metrics, contract summary, and audit log
+- Added local agricultural finance network banner asset
+```
+
+Completed engineering setup:
+
+```text
+- Added Hardhat deployment config
+- Added Injective EVM mainnet/testnet RPC and chainId settings
+- Added scripts/deploy.js
+- Added scripts/seed-demo.js
+- Added scripts/compile-solcjs.js
+- Added .env.example
+- Added .gitignore
+```
+
+Local verification completed:
 
 ```text
 npm install
 npm run compile:solcjs
 node --check public/src/app.js
-Vite 本地服务 http://127.0.0.1:5175/ 返回 200 OK
+Vite local server returned 200 OK
 ```
+
+## About the Author
+
+Open to DevRel opportunities.
+
+Bachelor's degree in Computer Science.
+
+From 2023 to 2024, worked as a product manager on the digitalization of provincial agricultural financing guarantee systems, focusing on system design and cross-institution coordination.
+
+Currently a Chinese-language finance content creator.
